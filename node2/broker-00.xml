@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<configuration xmlns="urn:activemq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+  <!-- from 1.0.0 to 1.5.5 the following line should be : <core xmlns="urn:activemq:core"> -->
+  <core xmlns="urn:activemq:core" xsi:schemaLocation="urn:activemq:core ">
+
+    <connectors>
+       <connector name="netty-connector">tcp://localhost:61616</connector>
+    </connectors>
+
+    <broadcast-groups>
+      <broadcast-group name="my-broadcast-group">
+        <group-address>231.7.7.7</group-address>
+        <group-port>9876</group-port>
+        <broadcast-period>2000</broadcast-period>
+        <connector-ref>netty-connector</connector-ref>
+      </broadcast-group>
+    </broadcast-groups>
+
+    <discovery-groups>
+      <discovery-group name="my-discovery-group">
+        <group-address>${udp-address:231.7.7.7}</group-address>
+        <group-port>9876</group-port>
+        <refresh-timeout>10000</refresh-timeout>
+      </discovery-group>
+    </discovery-groups>
+
+    <cluster-connections>
+      <cluster-connection name="my-cluster">
+        <connector-ref>netty-connector</connector-ref>
+        <retry-interval>500</retry-interval>
+        <use-duplicate-detection>true</use-duplicate-detection>
+        <message-load-balancing>ON_DEMAND</message-load-balancing>
+        <max-hops>2</max-hops>
+        <discovery-group-ref discovery-group-name="my-discovery-group"/>
+      </cluster-connection>
+    </cluster-connections>
+
+  </core>
+</configuration>
